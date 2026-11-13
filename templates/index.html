@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GradePredict AI | Student Performance</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f5f4fa;
+            color: #24213a;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background: #17152c;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 55px;
+            padding-left: 8px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            background: linear-gradient(135deg, #a78bfa, #7452d6);
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            font-size: 21px;
+            box-shadow: 0 5px 20px #8b5cf655;
+        }
+
+        .brand h2 {
+            font-family: 'Outfit';
+            font-size: 20px;
+            letter-spacing: -.5px;
+        }
+
+        .brand span {
+            color: #b8a1ff;
+        }
+
+        .menu-label {
+            font-size: 10px;
+            color: #85819f;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin: 0 0 15px 12px;
+        }
+
+        .nav-item {
+            padding: 14px 15px;
+            margin-bottom: 9px;
+            border-radius: 12px;
+            color: #aaa6c2;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .nav-item.active {
+            color: white;
+            background: linear-gradient(100deg, #7655d6, #5c42b0);
+            box-shadow: 0 8px 22px #7655d644;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 18px;
+            background: #24213e;
+            border: 1px solid #373253;
+            border-radius: 15px;
+        }
+
+        .sidebar-bottom small {
+            color: #aaa6c2;
+            font-size: 11px;
+        }
+
+        .sidebar-bottom p {
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .online {
+            color: #67e8b1;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 35px 42px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: #9692a8;
+        }
+
+        .breadcrumb strong {
+            color: #5d4a9e;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: linear-gradient(135deg, #9b7aef, #6245bd);
+            font-size: 15px;
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 36px 38px;
+            border-radius: 22px;
+            color: white;
+            background: linear-gradient(115deg, #272044, #513a91 65%, #7959c9);
+            box-shadow: 0 15px 35px #4e3b8b22;
+            margin-bottom: 25px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 270px;
+            height: 270px;
+            border: 1px solid #ffffff20;
+            border-radius: 50%;
+            right: 55px;
+            top: -120px;
+            box-shadow: 0 0 0 35px #ffffff08,
+                        0 0 0 70px #ffffff05;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 30px;
+            background: #ffffff18;
+            border: 1px solid #ffffff30;
+            font-size: 10px;
+            letter-spacing: 1.3px;
+            font-weight: 700;
+            margin-bottom: 17px;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit';
+            font-size: 31px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            color: #d8d0ef;
+            font-size: 13px;
+            line-height: 1.8;
+            max-width: 560px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 27px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #eeebf5;
+            padding: 22px;
+            border-radius: 17px;
+            box-shadow: 0 5px 18px #28204408;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #f0ebff;
+            display: grid;
+            place-items: center;
+            font-size: 19px;
+        }
+
+        .stat-card small {
+            color: #9692a8;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .stat-card h2 {
+            font-family: 'Outfit';
+            font-size: 25px;
+            color: #30264d;
+        }
+
+        .stat-card p {
+            font-size: 11px;
+            color: #aaa6b8;
+            margin-top: 5px;
+        }
+
+        /* CONTENT */
+        .section-heading {
+            margin-bottom: 17px;
+        }
+
+        .section-heading h2 {
+            font-family: 'Outfit';
+            font-size: 19px;
+            color: #30264d;
+        }
+
+        .section-heading p {
+            color: #9692a8;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(260px, .85fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #eeebf5;
+            border-radius: 19px;
+            padding: 26px;
+            box-shadow: 0 5px 20px #28204408;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .panel-title-icon {
+            width: 40px;
+            height: 40px;
+            background: #f0ebff;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .panel-title h3 {
+            font-family: 'Outfit';
+            font-size: 16px;
+        }
+
+        .panel-title p {
+            font-size: 11px;
+            color: #a09bad;
+            margin-top: 3px;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #514a67;
+            margin-bottom: 9px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #e9e5f0;
+            background: #fbfaff;
+            border-radius: 11px;
+            outline: none;
+            font-family: inherit;
+            color: #504965;
+            font-size: 12px;
+            transition: .2s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: #8b6ce0;
+            box-shadow: 0 0 0 3px #8b6ce018;
+            background: white;
+        }
+
+        .field-hint {
+            font-size: 10px;
+            color: #a29caf;
+            margin-top: 7px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            background: linear-gradient(100deg, #7957d4, #573bb0);
+            box-shadow: 0 8px 18px #7957d433;
+            transition: .2s;
+            margin-top: 5px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 23px #7957d455;
+        }
+
+        /* INFO */
+        .info-card {
+            background: linear-gradient(145deg, #f7f4ff, #fdfcff);
+            border: 1px solid #ebe5fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 17px;
+        }
+
+        .info-card h4 {
+            font-family: 'Outfit';
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #4c3a83;
+        }
+
+        .info-card p {
+            font-size: 11px;
+            color: #89839d;
+            line-height: 1.8;
+        }
+
+        .grade-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+        }
+
+        .grade-item {
+            padding: 11px;
+            background: white;
+            border: 1px solid #eeeaf5;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grade-item span {
+            font-size: 11px;
+            color: #8d879d;
+        }
+
+        .grade-item strong {
+            color: #6e50bd;
+            font-size: 12px;
+        }
+
+        /* RESULT */
+        .result {
+            margin-top: 22px;
+            padding: 23px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f1edff, #faf8ff);
+            border: 1px solid #ded4fa;
+            text-align: center;
+        }
+
+        .result small {
+            color: #8872be;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+        }
+
+        .result h3 {
+            font-family: 'Outfit';
+            font-size: 30px;
+            color: #5d40ad;
+            margin: 10px 0;
+        }
+
+        .result p {
+            color: #82799b;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .grade-code {
+            display: inline-block;
+            margin-top: 12px;
+            background: white;
+            border: 1px solid #e5ddf8;
+            padding: 8px 15px;
+            border-radius: 30px;
+            color: #6448b2;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .error {
+            margin-top: 15px;
+            padding: 13px;
+            background: #fff0f0;
+            color: #c04444;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #aaa5b8;
+            font-size: 10px;
+            margin-top: 35px;
+        }
+
+        @media (max-width: 950px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                padding: 25px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 17px;
+            }
+
+            .brand {
+                margin-bottom: 18px;
+            }
+
+            .menu-label,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-item {
+                display: inline-flex;
+                margin: 0 5px 0 0;
+                padding: 10px;
+                font-size: 11px;
+            }
+
+            .main {
+                padding: 20px 15px;
+            }
+
+            .hero {
+                padding: 25px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                margin-bottom: 20px;
+            }
+
+            .panel {
+                padding: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">✦</div>
+            <h2>Grade<span>Predict</span></h2>
+        </div>
+
+        <div class="menu-label">MENU UTAMA</div>
+
+        <div class="nav-item active">
+            <span class="nav-icon">▦</span> Dashboard
+        </div>
+
+        <div class="nav-item">
+            <span class="nav-icon">✧</span> Prediksi Nilai
+        </div>
+
+        <div class="nav-item">
+            <span class="nav-icon">▤</span> Informasi Grade
+        </div>
+
+        <div class="sidebar-bottom">
+            <small>STATUS SISTEM</small>
+            <p><span class="online">●</span> Model Random Forest Aktif</p>
+            <p>Student Performance AI</p>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <div class="breadcrumb">Workspace / <strong>Dashboard</strong></div>
+            <div class="profile">
+                <div class="avatar">AI</div>
+                <span>Academic Analytics</span>
+            </div>
+        </div>
+
+        <section class="hero">
+            <div class="hero-tag">✦ ARTIFICIAL INTELLIGENCE SYSTEM</div>
+            <h1>Student Performance Prediction</h1>
+            <p>
+                Platform prediksi kategori nilai mahasiswa menggunakan
+                algoritma Random Forest. Masukkan informasi akademik
+                untuk mendapatkan hasil prediksi secara otomatis.
+            </p>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-top">
+                    <small>DATASET MAHASISWA</small>
+                    <div class="stat-icon">▤</div>
+                </div>
+                <h2>145</h2>
+                <p>Total data dalam dataset</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <small>ALGORITMA</small>
+                    <div class="stat-icon">✧</div>
+                </div>
+                <h2>Random Forest</h2>
+                <p>Metode klasifikasi machine learning</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <small>AKURASI PENGUJIAN</small>
+                    <div class="stat-icon">◎</div>
+                </div>
+                <h2>37.93%</h2>
+                <p>Hasil evaluasi data testing</p>
+            </div>
+        </section>
+
+        <div class="section-heading">
+            <h2>Prediksi Performa Akademik</h2>
+            <p>Lengkapi lima informasi berikut untuk menjalankan prediksi.</p>
+        </div>
+
+        <div class="content-grid">
+
+            <section class="panel">
+                <div class="panel-title">
+                    <div class="panel-title-icon">✦</div>
+                    <div>
+                        <h3>Input Data Mahasiswa</h3>
+                        <p>Student academic information</p>
+                    </div>
+                </div>
+
+                <form action="/predict" method="POST">
+
+                    <div class="form-group">
+                        <label>01. Waktu Belajar Mingguan</label>
+                        <select name="17" required>
+                            <option value="">Pilih waktu belajar</option>
+                            <option value="1">Tidak belajar</option>
+                            <option value="2">Kurang dari 5 jam</option>
+                            <option value="3">6–10 jam</option>
+                            <option value="4">11–20 jam</option>
+                            <option value="5">Lebih dari 20 jam</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>02. Kehadiran di Kelas</label>
+                        <select name="22" required>
+                            <option value="">Pilih tingkat kehadiran</option>
+                            <option value="1">Selalu hadir</option>
+                            <option value="2">Kadang-kadang hadir</option>
+                            <option value="3">Tidak pernah hadir</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>03. Persiapan Ujian Midterm 1</label>
+                        <select name="23" required>
+                            <option value="">Pilih metode persiapan</option>
+                            <option value="1">Belajar sendiri</option>
+                            <option value="2">Belajar bersama teman</option>
+                            <option value="3">Tidak berlaku</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>04. Kebiasaan Mencatat di Kelas</label>
+                        <select name="25" required>
+                            <option value="">Pilih kebiasaan mencatat</option>
+                            <option value="1">Tidak pernah mencatat</option>
+                            <option value="2">Kadang-kadang mencatat</option>
+                            <option value="3">Selalu mencatat</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>05. Course ID</label>
+                        <input type="number" name="COURSE ID"
+                               min="1" step="1"
+                               placeholder="Masukkan kode Course ID"
+                               required>
+                        <p class="field-hint">
+                            Masukkan kode mata kuliah sesuai dataset.
+                        </p>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        ✦ &nbsp; Proses Prediksi Sekarang
+                    </button>
+
+                </form>
+
+                {% if prediction is not none %}
+                <div class="result">
+                    <small>HASIL PREDIKSI MODEL</small>
+                    <h3>{{ grade_label }}</h3>
+                    <p>
+                        Model Random Forest memprediksi kategori nilai
+                        berdasarkan lima fitur yang dimasukkan.
+                    </p>
+                    <div class="grade-code">
+                        Kode Grade: {{ prediction }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if error %}
+                <div class="error">
+                    ⚠ {{ error }}
+                </div>
+                {% endif %}
+
+            </section>
+
+            <aside class="panel">
+                <div class="panel-title">
+                    <div class="panel-title-icon">◎</div>
+                    <div>
+                        <h3>Informasi Sistem</h3>
+                        <p>Model and grade reference</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h4>✦ Tentang Model</h4>
+                    <p>
+                        Sistem menggunakan algoritma Random Forest
+                        untuk memprediksi kategori nilai mahasiswa
+                        berdasarkan pola data akademik.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Daftar Kategori Grade</h4>
+                    <p style="margin-bottom:13px;">
+                        Referensi kode kategori nilai dalam dataset.
+                    </p>
+
+                    <div class="grade-list">
+                        <div class="grade-item"><span>Grade 0</span><strong>Fail</strong></div>
+                        <div class="grade-item"><span>Grade 1</span><strong>DD</strong></div>
+                        <div class="grade-item"><span>Grade 2</span><strong>DC</strong></div>
+                        <div class="grade-item"><span>Grade 3</span><strong>CC</strong></div>
+                        <div class="grade-item"><span>Grade 4</span><strong>CB</strong></div>
+                        <div class="grade-item"><span>Grade 5</span><strong>BB</strong></div>
+                        <div class="grade-item"><span>Grade 6</span><strong>BA</strong></div>
+                        <div class="grade-item"><span>Grade 7</span><strong>AA</strong></div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Keunggulan Sistem</h4>
+                    <p>
+                        ✓ Prediksi otomatis<br>
+                        ✓ Menggunakan lima fitur input<br>
+                        ✓ Model Random Forest terlatih<br>
+                        ✓ Hasil prediksi ditampilkan langsung
+                    </p>
+                </div>
+            </aside>
+
+        </div>
+
+        <div class="footer">
+            GradePredict AI · Student Performance Analytics · Random Forest Classification
+        </div>
+
+    </main>
+</div>
+</body>
+</html>
